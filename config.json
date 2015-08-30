@@ -1,0 +1,17 @@
+{
+    "dbfile": "/home/fgss/.pichi/pichi.db",
+    "modules": [{
+			"network": "vk",
+			"login": "petuhach@yandex.ua",
+			"password": "ololo"
+		},
+		{
+			"network": "jabber",
+			"login": "petuhach@yandex.ua",
+			"password": "ololo",
+			"conferences": ["2ch.so@conference.jabber.ru", "anon-rp@conference.jabber.ru"]
+		},
+		{
+			"network": "skype"
+		}]
+} 
