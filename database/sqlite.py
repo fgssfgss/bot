@@ -12,7 +12,7 @@ class Database():
     self.db = connection.cursor()
     
   def fetch_row_with_words(self, first = '', second = '', third = ''):
-    if (not first) and (not second) and (not third):
+    if not first and not second and not third:
       return self.db.execute("SELECT * FROM lexems WHERE lexeme1 = '#beg#' ORDER BY RANDOM() LIMIT 0,1;")
       
     elif not first:
@@ -29,16 +29,16 @@ class Database():
       result = self.fetch_row_with_words(first, second, third)
       for row in result:
         answer = []
-        answer.extend(row[0])
-        answer.extend(row[1])
-        answer.extend(row[2])
+        answer.append(row[0])
+        answer.append(row[1])
+        answer.append(row[2])
         return answer
       
     else:
       result = self.fetch_row_with_words(word, word, word)
       for row in result:
         answer = []
-        answer.extend(row[0])
-        answer.extend(row[1])
-        answer.extend(row[2])
+        answer.append(row[0])
+        answer.append(row[1])
+        answer.append(row[2])
         return answer

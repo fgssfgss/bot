@@ -1,14 +1,17 @@
 {
     "dbfile": "/home/fgss/.pichi/pichi.db",
+    "answer_mode": "bynick",
+    "nicklist": "Железяка",
     "modules": [{
 			"network": "vk",
 			"login": "petuhach@yandex.ua",
-			"password": "ololo"
+			"password": "ololololo"
 		},
 		{
 			"network": "jabber",
-			"login": "petuhach@yandex.ua",
-			"password": "ololo",
+			"jid": "qcezwxda@jabber.ru",
+			"password": "olololololololololo",
+			"nick": "Железяка",
 			"conferences": ["2ch.so@conference.jabber.ru", "anon-rp@conference.jabber.ru"]
 		},
 		{

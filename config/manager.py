@@ -5,11 +5,19 @@ import pprint
 
 class ConfigManager():
   def __init__(self, filename):
-    print(dir(Parser))
     self.data = Parser().parse(filename)
     
   def get_db_path(self):
     return self.data['dbfile']
+  
+  def get_mode(self):
+    return self.data['answer_mode']
+  
+  def set_mode(self, mode):
+    self.data['answer_mode'] = mode
+  
+  def get_nick_list(self):
+    return self.data['nicklist'].split(' ')
   
   def get_modules_len(self):
     return len(self.data['modules'])

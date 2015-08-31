@@ -5,6 +5,7 @@ import threading
 import requests
 import pprint
 import json
+import time
 
 class VKModule(threading.Thread):
   def __init__(self):
@@ -96,6 +97,12 @@ class VKModule(threading.Thread):
         context_message['text'] = information['updates'][i][6]
         context_message['flags'] = information['updates'][i][2]
         message_id = information['updates'][i][1]
+        
+        if context_message['flags'] & 2: # outcoming messages
+          continue
+        if context_message['text'] is None:
+          continue
+        
         self.mark_as_read(message_id)
         self.callback(context_message) # call callback function in manager
     return
