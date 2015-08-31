@@ -1,10 +1,12 @@
 #!/usr/bin/python3 
 
-import parser
+from .parser import Parser
+import pprint
 
 class ConfigManager():
   def __init__(self, filename):
-    self.data = parser.parse(filename)
+    print(dir(Parser))
+    self.data = Parser().parse(filename)
     
   def get_db_path(self):
     return self.data['dbfile']

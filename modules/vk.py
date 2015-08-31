@@ -3,10 +3,16 @@
 import vk_api
 import threading
 import requests
+import pprint
+import json
 
 class VKModule(threading.Thread):
   def __init__(self):
     threading.Thread.__init__(self, name='vk_module')
+    self.options = dict()
+    self.ts = ''
+    self.server = ''
+    self.key = ''
   
   def set_options(self, options):
     self.options = options
@@ -14,8 +20,12 @@ class VKModule(threading.Thread):
   def set_callback_function(self, func):
     self.callback = func
     
+  def get_module_name(self):
+    return "vk"
+    
   def init(self):
     try:
+      print(self.options)
       self.vk = vk_api.VkApi(login = self.options['login'], password = self.options['password']) 
       self.vk.authorization()
     except vk_api.AuthorizationError as error_msg:
@@ -26,8 +36,8 @@ class VKModule(threading.Thread):
 	'use_ssl': 0,
 	'pts': 0
     }
-    response = vk.method('messages.getLongPollServer', pollserveropts)
-    
+    response = self.vk.method('messages.getLongPollServer', pollserveropts)
+    print(response)
     self.ts = response['ts']
     self.server = response['server']
     self.key = response['key']
@@ -80,13 +90,14 @@ class VKModule(threading.Thread):
     
     for i in range(0, len(information['updates'])):
       if information['updates'][i][0] == 4: # this is incoming/outcoming messages
-	context_message['from'] = information['updates'][i][3]
-	context_message['text'] = information['updates'][i][6]
-	context_message['flags'] = information['updates'][i][2]
-	message_id = information['updates'][i][1]
-	
-	self.mark_as_read(message_id)
-	self.callback(context_message) # call callback function in manager
+        context_message = dict()
+        context_message['module'] = self
+        context_message['from'] = information['updates'][i][3]
+        context_message['text'] = information['updates'][i][6]
+        context_message['flags'] = information['updates'][i][2]
+        message_id = information['updates'][i][1]
+        self.mark_as_read(message_id)
+        self.callback(context_message) # call callback function in manager
     return
   
   def run(self):

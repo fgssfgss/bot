@@ -3,8 +3,12 @@
 import json
 from pprint import pprint
 
-def parse(filename):
-  with open(filename) as file:
-    data = json.load(file)
-    pprint(data)
-    return data
+class Parser():
+  def __init__(self):
+    pass
+  
+  def parse(self,filename):
+    with open(filename) as file:
+      data = json.load(file)
+      pprint(data)
+      return data
