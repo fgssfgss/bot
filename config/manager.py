@@ -24,3 +24,11 @@ class ConfigManager():
   
   def get_modules_elements(self, idx):
     return self.data['modules'][idx]
+
+  def get_enabled_modules(self):
+    return self.data['enabled_modules']
+
+  def get_sqlite_mode(self):
+    return int(self.data['sqlite_mode'])
+
+  

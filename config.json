@@ -1,7 +1,9 @@
 {
-    "dbfile": "/home/fgss/.pichi/pichi.db",
+    "dbfile": "database.db",
+    "sqlite_mode": "-1",
     "answer_mode": "bynick",
     "nicklist": "Железяка",
+    "enabled_modules": ["telegram"],
     "modules": [{
 			"network": "vk",
 			"login": "petuhach@yandex.ua",
@@ -16,5 +18,9 @@
 		},
 		{
 			"network": "skype"
+		},
+        {
+			"network": "telegram",
+			"token": "your_token"
 		}]
 } 

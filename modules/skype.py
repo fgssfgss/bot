@@ -1,6 +1,13 @@
 #!/usr/bin/python3 
 
+# stub
 import threading
+class SkypeModule(threading.Thread):
+    pass
+
+# very broken, works on linux only with dbus
+"""
+
 import pprint
 import time
 import dbus.service
@@ -70,4 +77,4 @@ class SkypeModule(threading.Thread, dbus.service.Object):
   def run(self):
     loop = gobject.MainLoop()
     loop.run()
- 
+ """

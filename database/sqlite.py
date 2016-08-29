@@ -5,9 +5,10 @@ import ctypes
 from ctypes.util import find_library
 
 class Database():
-  def __init__(self, dbfile):
-    sqlite_lib = ctypes.CDLL(find_library('sqlite3'))
-    sqlite_lib.sqlite3_config(3)
+  def __init__(self, dbfile, sqlite_mode):
+    if sqlite_mode != -1:
+      sqlite_lib = ctypes.CDLL(find_library('sqlite3'))
+      sqlite_lib.sqlite3_config(sqlite_mode)
     connection = sqlite3.connect(dbfile, check_same_thread=False)
     self.db = connection.cursor()
     
