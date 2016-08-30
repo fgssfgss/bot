@@ -22,8 +22,12 @@ class Generator():
     right_part = ''
     left = False
     right = False
-    
-    init_words = self.db.fetch_three_words(word = word_gen)
+
+    try:
+      init_words = self.db.fetch_three_words(word = word_gen)
+    except LookupError as e:
+      return 'Not found!'
+      
     
     left_words = init_words
     while not left:

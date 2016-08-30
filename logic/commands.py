@@ -50,8 +50,8 @@ class CommandManager():
       return
     
     if self.check_message_for_command(message) == False:
-      #if not self.nick_in_message(message):
-      #  return
+      if context['module'].get_module_name() == "jabber" and not self.nick_in_message(message): # only for jabber and maybe telegram, but not tested
+        return
       text = self.generator.gen_full_rand()
       self.send_answer(context, text)
     else:
