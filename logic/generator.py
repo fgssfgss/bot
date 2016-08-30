@@ -3,6 +3,7 @@
 class Generator():
   def __init__(self, db):
     self.db = db
+    self.max = 5000 # symbols
     
   def gen_full_rand(self):
     phrase = ''
@@ -36,6 +37,8 @@ class Generator():
       if '#beg#' in left_words:
         left = True
       left_words = self.db.fetch_three_words(second = left_words[0], third = left_words[1])
+      if len(left_part) >= (self.max/2): # cyclic out
+        left = True
     
     right_words = init_words
     while not right:
@@ -44,5 +47,7 @@ class Generator():
       if '#end#' in right_words:
         right = True
       right_words = self.db.fetch_three_words(first = right_words[1], second = right_words[2])
+      if len(right_part) >= (self.max/2): # cyclic out
+        right = True
     
     return left_part + right_part
