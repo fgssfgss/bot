@@ -28,9 +28,9 @@ class Generator():
       init_words = self.db.fetch_three_words(word = word_gen)
     except LookupError as e:
       return 'Not found!'
-      
     
     left_words = init_words
+    
     while not left:
       print(left_words)
       left_part = str(left_words[1]) + ' ' + left_part
@@ -40,7 +40,7 @@ class Generator():
       if len(left_part) >= (self.max/2): # cyclic out
         left = True
     
-    right_words = init_words
+    right_words = self.db.fetch_three_words(first = init_words[1], second = init_words[2])
     while not right:
       print(right_words)
       right_part = right_part + str(right_words[1]) + ' '
