@@ -38,5 +38,5 @@ class SqliteMTProxy(threading.Thread):
         result = self.cursor.execute(task['script'])
       else:
         result = self.cursor.execute(task['script'], task['args'])
-      self.results[task['token']] = result
+      self.results[task['token']] = result.fetchone()
       self.task_queue.task_done()
