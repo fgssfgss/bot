@@ -27,7 +27,11 @@ class VKModule(threading.Thread):
   def init(self):
     try:
       print(self.options)
-      self.vk = vk_api.VkApi(login = self.options['login'], password = self.options['password']) 
+      #client_id=2274003&client_secret=hHbZxrka2uZ6jB1inYsH
+      if self.options['token'] == None:
+        self.vk = vk_api.VkApi(login = self.options['login'], password = self.options['password'])
+      else:
+        self.vk = vk_api.VkApi(app_id = 5839853, client_secret = "NvPKHWzkXiFRjcyKkKV8", token = self.options['token'])
       self.vk.authorization()
     except vk_api.AuthorizationError as error_msg:
       print(error_msg) 

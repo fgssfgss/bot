@@ -16,9 +16,6 @@ class ConfigManager():
   def set_mode(self, mode):
     self.data['answer_mode'] = mode
   
-  def get_nick_list(self):
-    return self.data['nicklist'].split(' ')
-  
   def get_modules_len(self):
     return len(self.data['modules'])
   

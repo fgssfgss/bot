@@ -1,73 +1,42 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
 import sqlite3
 import ctypes
 import threading
+import queue
+import uuid
 from ctypes.util import find_library
 
-class Database():
+class SqliteMTProxy(threading.Thread):
   def __init__(self, dbfile, sqlite_mode):
+    threading.Thread.__init__(self, name = "sqlite mt proxy")
     if sqlite_mode != -1:
       sqlite_lib = ctypes.CDLL(find_library('sqlite3'))
       sqlite_lib.sqlite3_config(sqlite_mode)
     connection = sqlite3.connect(dbfile, check_same_thread=False)
-    self.db = connection.cursor()
+    self.cursor = connection.cursor()
     self.lock = threading.Lock()
+    self.task_queue = queue.Queue()
+    self.results = dict()
 
-  def check_word_existance(self, word):
-    try:
-      self.lock.acquire(True)
-      self.db.execute("SELECT count(*) FROM lexems WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ?;", (word, word, word))
-      return int(self.db.fetchone()[0])
-    finally:
-      self.lock.release()
-    
-  def fetch_row_with_words(self, first = '', second = '', third = ''):
-    if not first and not second and not third:
-      try:
-        self.lock.acquire(True)
-        return self.db.execute("SELECT * FROM lexems WHERE lexeme1 = '#beg#' ORDER BY RANDOM() LIMIT 0,1;")
-      finally:
-        self.lock.release()
-      
-    elif not first:
-      try:
-        self.lock.acquire(True)
-        return self.db.execute("SELECT * FROM lexems WHERE lexeme2 = ? AND lexeme3 = ? ORDER BY `count` DESC LIMIT 0,10;", (second, third))
-      finally:
-        self.lock.release()
+  def execute(self, script, args = None):
+    token = str(uuid.uuid4())
+    self.task_queue.put(item={'script': script, 'args': args, 'token' : token})
+    return token
 
-    elif not third:
-      try:
-        self.lock.acquire(True)
-        return self.db.execute("SELECT * FROM lexems WHERE lexeme1 = ? AND lexeme2 = ? ORDER BY `count` DESC LIMIT 0,10;", (first, second))
-      finally:
-        self.lock.release()
-    
-    else:
-      try:
-        self.lock.acquire(True)
-        return self.db.execute("SELECT * FROM lexems WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ? ORDER BY RANDOM() LIMIT 0,1;", (first, second, third))
-      finally:
-        self.lock.release()
-    
-  def fetch_three_words(self, first = '', second = '', third = '', word = ''):
-    if not word:
-      result = self.fetch_row_with_words(first, second, third)
-      for row in result:
-        answer = []
-        answer.append(row[0])
-        answer.append(row[1])
-        answer.append(row[2])
-        return answer
-      
-    else:
-      if self.check_word_existance(word) == 0:
-        raise LookupError
-      result = self.fetch_row_with_words(word, word, word)
-      for row in result:
-        answer = []
-        answer.append(row[0])
-        answer.append(row[1])
-        answer.append(row[2])
-        return answer
+  def get_result(self, token):
+    while not token in self.results:
+      pass
+    return self.results[token]
+
+  def run(self):
+    while True:
+      task = self.task_queue.get()
+      #print(task['script'])
+      #print(task['args'])
+      if task['args'] == None:
+        result = self.cursor.execute(task['script'])
+      else:
+        result = self.cursor.execute(task['script'], task['args'])
+      self.results[task['token']] = result
+      self.task_queue.task_done()

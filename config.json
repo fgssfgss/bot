@@ -2,25 +2,25 @@
     "dbfile": "database.db",
     "sqlite_mode": "-1",
     "answer_mode": "bynick",
-    "nicklist": "Железяка",
     "enabled_modules": ["telegram"],
     "modules": [{
 			"network": "vk",
-			"login": "petuhach@yandex.ua",
-			"password": "ololololo"
+			"token": "blablabla",
+			"login": "blablabla",
+			"password": "blablabla"
 		},
 		{
 			"network": "jabber",
 			"jid": "qcezwxda@jabber.ru",
-			"password": "olololololololololo",
-			"nick": "Железяка",
-			"conferences": ["2ch.so@conference.jabber.ru", "anon-rp@conference.jabber.ru"]
+			"password": "blablabla",
+			"nick": "Shizik",
+			"conferences": ["anon-rp@conference.jabber.ru"]
 		},
 		{
 			"network": "skype"
 		},
         {
 			"network": "telegram",
-			"token": "your_token"
+			"token": ""
 		}]
 } 

@@ -1,6 +1,7 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
-from database.sqlite import Database
+
+from database.db import Database
 from .generator import Generator
 from .commands import CommandManager
 from modules.vk import VKModule
@@ -8,17 +9,35 @@ from modules.jabber import JabberModule
 from modules.skype import SkypeModule
 from modules.telegram import TeleModule
 import pprint
+import threading
+import queue
 
 class TaskManager():
+  class WorkerThread(threading.Thread):
+    def __init__(self, task_manager, command_manager):
+      threading.Thread.__init__(self, name='worker thread')
+      self.command_manager = command_manager
+      self.task_manager = task_manager
+
+    def run(self):
+      while True:
+        context = self.task_manager.queue.get()
+        print(context)
+        self.command_manager.parse_message(context)
+        self.task_manager.queue.task_done()
+
+
+
   def __init__(self):
     self.modules = []
+    self.queue = queue.Queue()
+    self.workers = [] # worker pool
 
   def set_config(self, config):
     self.config = config
     
   def callback_function(self, context):
-    print(context)
-    self.command_manager.parse_message(context)
+    self.queue.put(context)
     
   def run(self):
     # Helpers init
@@ -41,7 +60,11 @@ class TaskManager():
     if "telegram" in enabled_modules:
       self.modules.append(TeleModule())
       modules_count = modules_count + 1
-    
+
+    for i in range(0, 2):
+      self.workers.append(self.WorkerThread(self, self.command_manager))
+      self.workers[i].start()
+
     for i in range(self.config.get_modules_len()):
       for j in range(modules_count):
         if self.modules[j].get_module_name() == self.config.get_modules_elements(i)['network']:

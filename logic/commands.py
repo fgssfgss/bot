@@ -12,13 +12,6 @@ class CommandManager():
     else:
       return False
     
-  def nick_in_message(self, message):
-    nick_list = self.config.get_nick_list()
-    for i in range(len(nick_list)):
-      if message.startwith(nick_list[i]):
-        return True
-    return False
-    
   def send_answer(self, context, text):
     module = context['module']
     to = context['from']
@@ -50,7 +43,7 @@ class CommandManager():
       return
     
     if self.check_message_for_command(message) == False:
-      if context['module'].get_module_name() == "jabber" and not self.nick_in_message(message): # only for jabber and maybe telegram, but not tested
+      if context['module'].get_module_name() == "jabber" and not message.startwith(context['module'].options['nick']): # only for jabber and maybe telegram, but not tested
         return
       text = self.generator.gen_full_rand()
       self.send_answer(context, text)
