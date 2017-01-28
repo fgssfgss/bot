@@ -2,6 +2,8 @@
 
 # stub
 import threading
+
+
 class SkypeModule(threading.Thread):
     pass
 
