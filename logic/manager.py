@@ -8,6 +8,7 @@ from modules.vk import VKModule
 from modules.jabber import JabberModule
 from modules.skype import SkypeModule
 from modules.telegram import TeleModule
+from modules.discord import DiscordModule
 import pprint
 import threading
 import queue
@@ -56,6 +57,9 @@ class TaskManager:
             modules_count += 1
         if "telegram" in enabled_modules:
             self.modules.append(TeleModule())
+            modules_count += 1
+        if "discord" in enabled_modules:
+            self.modules.append(DiscordModule())
             modules_count += 1
 
         for i in range(self.config.get_worker_thread_num()):

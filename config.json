@@ -1,7 +1,7 @@
 {
     "dbfile": "database.db",
     "sqlite_mode": "-1",
-	"worker_threads" : "2",
+    "worker_threads" : "2",
     "answer_mode": "bynick",
     "enabled_modules": ["telegram", "vk"],
     "modules": [{
@@ -22,6 +22,10 @@
 		},
         {
 			"network": "telegram",
+			"token": "blablabla"
+		},
+		{
+			"network": "discord",
 			"token": "blablabla"
 		}]
 } 
