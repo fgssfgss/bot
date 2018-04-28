@@ -1,4 +1,4 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
 
 class Generator:
@@ -6,10 +6,17 @@ class Generator:
         self.db = db
         self.max = 200
 
+    def insert_to_db(self, text):
+        self.db.insert_text(text)
+
     def gen_full_rand(self):
         phrase = ''
         last = False
         words = self.db.fetch_three_words()
+
+        if len(words) < 3:
+            return "Nothing to say!"
+
         while not last:
             #print(words)
             phrase = phrase + str(words[1]) + ' '

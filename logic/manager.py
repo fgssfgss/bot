@@ -6,10 +6,8 @@ from .generator import Generator
 from .commands import CommandManager
 from modules.vk import VKModule
 from modules.jabber import JabberModule
-from modules.skype import SkypeModule
 from modules.telegram import TeleModule
 from modules.discord import DiscordModule
-import pprint
 import threading
 import queue
 
@@ -51,9 +49,6 @@ class TaskManager:
             modules_count += 1
         if "jabber" in enabled_modules:
             self.modules.append(JabberModule())
-            modules_count += 1
-        if "skype" in enabled_modules:
-            self.modules.append(SkypeModule())
             modules_count += 1
         if "telegram" in enabled_modules:
             self.modules.append(TeleModule())

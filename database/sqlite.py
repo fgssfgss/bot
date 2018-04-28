@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+import os
 import sqlite3
 import ctypes
 import threading
@@ -14,8 +14,16 @@ class SqliteMTProxy(threading.Thread):
         if sqlite_mode != -1:
             sqlite_lib = ctypes.CDLL(find_library('sqlite3'))
             sqlite_lib.sqlite3_config(sqlite_mode)
+        init = not os.path.isfile(dbfile)
         connection = sqlite3.connect(dbfile, check_same_thread=False)
         self.cursor = connection.cursor()
+        if init:
+            print("no db, init new one")
+            self.cursor.execute(
+                "CREATE TABLE lexems (`lexeme1` TEXT, `lexeme2` TEXT, `lexeme3` TEXT, `count` INT NOT NULL DEFAULT '0', UNIQUE (`lexeme1`, `lexeme2`, `lexeme3`));")
+
+        self.cursor.execute("PRAGMA synchronous = OFF")
+        self.cursor.execute("PRAGMA journal_mode = MEMORY")
         self.cond = threading.Condition()
         self.task_queue = queue.Queue()
         self.results = dict()
@@ -35,7 +43,6 @@ class SqliteMTProxy(threading.Thread):
             self.cond.wait()
         self.cond.release()
         return self.results[token]
-
 
     def run(self):
         while True:
