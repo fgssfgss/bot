@@ -43,18 +43,19 @@ class CommandManager:
     def parse_message(self, context):
         message = context['text']
 
-        if not self.enabled:
-            return
-
         if not self.check_message_for_command(message):
             if context['module'].get_module_name() == "jabber" and not message.startwith(
                     context['module'].options['nick']):  # only for jabber and maybe telegram, but not tested
+                return
+            if not self.enabled:
                 return
             text = self.generator.gen_full_rand()
             self.send_answer(context, text)
         else:
             value = self.parse_command(message)
             if value is None:  # if command does not return anything
+                return
+            if not self.enabled:
                 return
             self.send_answer(context, value)
 
@@ -63,7 +64,7 @@ class CommandManager:
         return text
 
     def task_about(self):
-        text = 'Zhelezyaka v0.0.1, written by Linux_Kun'
+        text = 'Zhelezyaka v0.0.2, written by fgssfgss'
         return text
 
     def task_roll(self):
