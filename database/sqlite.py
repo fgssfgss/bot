@@ -16,7 +16,7 @@ class SqliteMTProxy(threading.Thread):
             sqlite_lib.sqlite3_config(sqlite_mode)
         connection = sqlite3.connect(dbfile, check_same_thread=False)
         self.cursor = connection.cursor()
-        self.lock = threading.Lock()
+        self.cond = threading.Condition()
         self.task_queue = queue.Queue()
         self.results = dict()
 
@@ -30,9 +30,12 @@ class SqliteMTProxy(threading.Thread):
         return
 
     def get_result(self, token):
+        self.cond.acquire()
         while token not in self.results:
-            pass
+            self.cond.wait()
+        self.cond.release()
         return self.results[token]
+
 
     def run(self):
         while True:
@@ -44,5 +47,8 @@ class SqliteMTProxy(threading.Thread):
                     result = self.cursor.execute(task['script'])
                 else:
                     result = self.cursor.execute(task['script'], task['args'])
+                self.cond.acquire()
                 self.results[task['token']] = result.fetchone()
+                self.cond.notify()
+                self.cond.release()
             self.task_queue.task_done()
