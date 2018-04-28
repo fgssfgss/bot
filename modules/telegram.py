@@ -7,7 +7,9 @@ import json
 import time
 import sys
 
-# dirty hack for smile support 
+# dirty hack for smile support
+from telebot.apihelper import ApiException
+
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
 
 
@@ -44,7 +46,11 @@ class TeleModule(threading.Thread):
         return True
 
     def send_message(self, to, text):
-        self.bot.send_message(to, text)
+        try:
+            self.bot.send_message(to, text)
+        except ApiException as e:
+            print("Cannot send message, maybe too long?")
 
     def run(self):
-        self.bot.polling(none_stop=True)
+        while True:
+            self.bot.polling(none_stop=True)
