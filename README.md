@@ -1,4 +1,4 @@
-###"Железяка"
+### "Железяка"
 Simple bot for Jabber, and VK, and Skype, Telegram, Discord.
 
 ### New goals
@@ -13,3 +13,14 @@ Simple bot for Jabber, and VK, and Skype, Telegram, Discord.
 - pyTelegramBotAPI
 - sqlite3
 - discord.py
+
+### How to use
+##### Run as:
+
+``python3 main.py config.json``
+
+You can use database.db with some existing phrases. Or create new one(set non existent file in config).
+##### Commands:
+- !on - enable bot
+- !off - disable bot(he will listen for phrases and put them into db)
+- !q - generate phrase with some word
