@@ -3,9 +3,6 @@
 import asyncio
 import discord
 import threading
-import pprint
-import json
-import time
 import sys
 
 # dirty hack for smile support

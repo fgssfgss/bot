@@ -2,9 +2,6 @@
 
 import telebot
 import threading
-import pprint
-import json
-import time
 import sys
 
 # dirty hack for smile support

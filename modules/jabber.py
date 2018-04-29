@@ -1,8 +1,6 @@
 #!/usr/bin/python3 
 
 import threading
-import pprint
-import time
 import sleekxmpp
 
 
