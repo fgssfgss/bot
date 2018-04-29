@@ -1,9 +1,9 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
+
+import sys
+import threading
 
 import telebot
-import threading
-import sys
-
 # dirty hack for smile support
 from telebot.apihelper import ApiException
 

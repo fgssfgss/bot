@@ -25,14 +25,14 @@ class Generator:
             words = self.db.fetch_three_words(first=words[1], second=words[2])
         return phrase
 
-    def gen_by_word(self, word_gen):
+    def gen_by_word(self, word_gen, substr=False):
         left_part = []
         right_part = []
         left = False
         right = False
 
         try:
-            init_words = self.db.fetch_three_words(word=word_gen)
+            init_words = self.db.fetch_three_words(word=word_gen, substr=substr)
         except LookupError as e:
             return 'Not found!'
 

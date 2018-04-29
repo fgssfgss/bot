@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
 import asyncio
-import discord
-import threading
 import sys
+import threading
+
+import discord
 
 # dirty hack for smile support
 non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
@@ -37,6 +38,7 @@ class DiscordModule(threading.Thread):
             context_message['from'] = message.channel
             context_message['text'] = message.content.translate(non_bmp_map)
             context_message['flags'] = 0
+
             self.callback(context_message)
 
         @bot.event

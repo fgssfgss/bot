@@ -1,10 +1,11 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
-import vk_api
-import threading
-import requests
 import json
+import threading
 import time
+
+import requests
+import vk_api
 
 
 class VKModule(threading.Thread):

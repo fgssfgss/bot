@@ -28,9 +28,11 @@ class Database:
                 if time.time() - start_time > 10:
                     print("Parse_Text | Too long...")
                     break
-                query += "INSERT OR IGNORE INTO lexems (`lexeme1`,`lexeme2`,`lexeme3`) VALUES(\'{0}\', \'{1}\', \'{2}\');\n".format(
+                query += "INSERT OR IGNORE INTO lexems (`lexeme1`,`lexeme2`,`lexeme3`) " \
+                         "VALUES (\'{0}\', \'{1}\', \'{2}\');\n".format(
                     words[x], words[x + 1], words[x + 2])
-                query += "UPDATE lexems SET count = count+1 WHERE lexeme1 = \'{0}\' AND lexeme2 = \'{1}\' AND lexeme3 = \'{2}\';\n".format(
+                query += "UPDATE lexems SET count = count+1 " \
+                         "WHERE lexeme1 = \'{0}\' AND lexeme2 = \'{1}\' AND lexeme3 = \'{2}\';\n".format(
                     words[x], words[x + 1], words[x + 2])
             if len(query) != 0:
                 self.db.insert(query)
@@ -49,31 +51,63 @@ class Database:
         self.inserter.start()
 
     def check_word_existance(self, word):
-        token = self.db.execute("SELECT count(*) FROM lexems WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ?;",(word, word, word))
+        token = self.db.execute("SELECT count(*) FROM lexems "
+                                "WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ?;",(word, word, word))
         res = self.db.get_result(token)
         return int(res[0])
 
     def insert_text(self, text):
         self.inserter.insert(text)
 
-    def fetch_row_with_words(self, first=None, second=None, third=None):
-        if first is None and second is None and third is None:
-            token = self.db.execute("SELECT * FROM lexems WHERE lexeme1 = '#beg#' ORDER BY RANDOM() LIMIT 0,1;")
-            return self.db.get_result(token)
+    def fetch_row_with_words_like(self, first=None, second=None, third=None):
+        first = '%' + first.translate(str.maketrans({'%': '\%'})) + '%' if first is not None else first
+        second = '%' + second.translate(str.maketrans({'%': '\%'})) + '%' if second is not None else second
+        third = '%' + third.translate(str.maketrans({'%': '\%'})) + '%' if third is not None else third
 
-        elif first is None:
-            token = self.db.execute("SELECT * FROM lexems WHERE lexeme2 = ? AND lexeme3 = ? ORDER BY RANDOM() DESC LIMIT 0,10;",(second, third))
+        if first is None:
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme2 LIKE ? AND lexeme3 LIKE ? ESCAPE '\\' "
+                                    "ORDER BY RANDOM() DESC LIMIT 0,10;",(second, third))
             return self.db.get_result(token)
 
         elif third is None:
-            token = self.db.execute("SELECT * FROM lexems WHERE lexeme1 = ? AND lexeme2 = ? ORDER BY RANDOM() DESC LIMIT 0,10;",(first, second))
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme1 LIKE ? AND lexeme2 LIKE ? ESCAPE '\\' "
+                                    "ORDER BY RANDOM() DESC LIMIT 0,10;",(first, second))
             return self.db.get_result(token)
 
         else:
-            token = self.db.execute("SELECT * FROM lexems WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ? ORDER BY RANDOM() LIMIT 0,1;",(first, second, third))
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme1 LIKE ? OR lexeme2 LIKE ? OR lexeme3 LIKE ? ESCAPE '\\' "
+                                    "ORDER BY RANDOM() LIMIT 0,1;",(first, second, third))
             return self.db.get_result(token)
 
-    def fetch_three_words(self, first=None, second=None, third=None, word=None):
+    def fetch_row_with_words(self, first=None, second=None, third=None):
+        if first is None and second is None and third is None:
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme1 = '#beg#'"
+                                    "ORDER BY RANDOM() LIMIT 0,1;")
+            return self.db.get_result(token)
+
+        elif first is None:
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme2 = ? AND lexeme3 = ? "
+                                    "ORDER BY RANDOM() DESC LIMIT 0,10;",(second, third))
+            return self.db.get_result(token)
+
+        elif third is None:
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme1 = ? AND lexeme2 = ? "
+                                    "ORDER BY RANDOM() DESC LIMIT 0,10;",(first, second))
+            return self.db.get_result(token)
+
+        else:
+            token = self.db.execute("SELECT * FROM lexems "
+                                    "WHERE lexeme1 = ? OR lexeme2 = ? OR lexeme3 = ? "
+                                    "ORDER BY RANDOM() LIMIT 0,1;",(first, second, third))
+            return self.db.get_result(token)
+
+    def fetch_three_words(self, first=None, second=None, third=None, word=None, substr=False):
         if word is None:
             row = self.fetch_row_with_words(first, second, third)
             answer = []
@@ -87,7 +121,10 @@ class Database:
         else:
             if self.check_word_existance(word) == 0:
                 raise LookupError
-            row = self.fetch_row_with_words(word, word, word)
+            if not substr:
+                row = self.fetch_row_with_words(word, word, word)
+            else:
+                row = self.fetch_row_with_words_like(word, word, word)
             answer = []
             if row is None:
                 return answer

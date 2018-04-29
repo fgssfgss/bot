@@ -22,11 +22,13 @@ class CommandManager:
         module.send_message(to, text)
 
     def parse_command(self, command, sender):
-        args = command.split(' ')
+        args = command.rstrip().split(' ')
         command_name = args[0]
 
         if command_name == '!q':
             return self.task_gen_by_word(args[1])
+        elif command_name == '!ql':
+            return self.task_gen_by_word_like(args[1])
         elif command_name == '!roll':
             return self.task_roll()
         elif command_name == '!about':
@@ -56,13 +58,17 @@ class CommandManager:
             text = self.generator.gen_full_rand()
             self.send_answer(context, text)
         else:
-            value = self.parse_command(message, sender)
+            value = self.parse_command(message.lstrip(), sender)
             if value is None:  # if command does not return anything
                 return
             self.send_answer(context, value)
 
     def task_gen_by_word(self, word):
         text = self.generator.gen_by_word(word)
+        return text
+
+    def task_gen_by_word_like(self, word):
+        text = self.generator.gen_by_word(word, True)
         return text
 
     def task_about(self):
@@ -88,10 +94,11 @@ class CommandManager:
         return text
 
     def task_print_help(self):
-        text = 'Available commands: [!help] [!about] [!q] [!roll] [!on] [!off]' \
+        text = 'Available commands: [!help] [!about] [!q] [!ql] [!roll] [!on] [!off]' \
                '\n!help - View this help' \
                '\n!about - View about message' \
                '\n!q - Generate message with some word inside' \
+               '\n!ql - Generate message with some substring in random word' \
                '\n!roll - Roll a dice' \
                '\n!on - Enable bot for this conference or chat' \
                '\n!off - Disable bot for this conference or chat'

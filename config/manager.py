@@ -1,12 +1,17 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 
-from .parser import Parser
-import pprint
+import json
 
 
 class ConfigManager:
     def __init__(self, filename):
-        self.data = Parser().parse(filename)
+        self.data = self.parse(filename)
+
+    @staticmethod
+    def parse(filename):
+        with open(filename) as file:
+            data = json.load(file)
+            return data
 
     def get_db_path(self):
         return self.data['dbfile']

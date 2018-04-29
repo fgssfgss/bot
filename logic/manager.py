@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import logging
 
 from database.db import Database
 from .generator import Generator
@@ -37,6 +38,8 @@ class TaskManager:
         self.queue.put(context)
 
     def run(self):
+        logging.info('Starting bot')
+
         # Helpers init
         enabled_modules = self.config.get_enabled_modules()
 
