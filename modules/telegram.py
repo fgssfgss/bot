@@ -53,4 +53,7 @@ class TeleModule(threading.Thread):
 
     def run(self):
         while True:
-            self.bot.polling(none_stop=True)
+            try:
+                self.bot.polling(none_stop=True)
+            except ConnectionError as e:
+                print('Some connection problems with Telegram')
