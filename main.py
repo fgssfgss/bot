@@ -19,4 +19,5 @@ class Main():
 
 
 if __name__ == "__main__":
+    sys.tracebacklimit = 0
     Main().run()
