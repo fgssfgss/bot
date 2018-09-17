@@ -3,6 +3,17 @@ import random
 
 
 class CommandManager:
+    commands = {'!qvoice': ('voice', lambda this, arg, sender: 'fuck you'),
+                '!q': ('text', lambda this, arg, sender: this.task_gen_by_word(arg[1])),
+                '!ql': ('text', lambda this, arg, sender: this.task_gen_by_word_like(arg[1])),
+                '!roll': ('text', lambda this, arg, sender: this.task_roll()),
+                '!about': ('text', lambda this, arg, sender: this.task_about()),
+                '!off': ('text', lambda this, arg, sender: this.task_disable_bot(sender)),
+                '!on': ('text', lambda this, arg, sender: this.self.task_enable_bot(sender)),
+                '!answer_mode': ('text', lambda this, arg, sender: this.task_set_answer_mode(arg[1])),
+                '!help': ('text', lambda this, arg, sender: this.task_print_help())
+                }
+
     def __init__(self, generator, config):
         self.generator = generator
         self.config = config
@@ -16,33 +27,25 @@ class CommandManager:
             return False
 
     @staticmethod
-    def send_answer(context, text):
+    def send_answer(context, **kwargs):
         module = context['module']
         to = context['from']
-        module.send_message(to, text)
+        command_type = kwargs.get('type', 'text')
+        arg = kwargs.get('arg', '')
+
+        if command_type == 'text':
+            module.send_message(to, arg)
+        elif command_type == 'voice' and module.get_module_name() == 'telegram':
+            module.send_voice(to, arg)
 
     def parse_command(self, command, sender):
         args = command.rstrip().split(' ')
         command_name = args[0]
 
-        if command_name == '!q':
-            return self.task_gen_by_word(args[1])
-        elif command_name == '!ql':
-            return self.task_gen_by_word_like(args[1])
-        elif command_name == '!roll':
-            return self.task_roll()
-        elif command_name == '!about':
-            return self.task_about()
-        elif command_name == '!off':
-            return self.task_disable_bot(sender)
-        elif command_name == '!on':
-            return self.task_enable_bot(sender)
-        elif command_name == '!answer_mode':
-            return self.task_set_answer_mode(args[1])
-        elif command_name == '!help':
-            return self.task_print_help()
+        if command_name in self.commands.keys():
+            return self.commands[command_name][1](self, args, sender), self.commands[command_name][0]
         else:
-            return self.task_unknown_command()
+            return self.task_unknown_command(), 'text'
 
     def parse_message(self, context):
         message = context['text']
@@ -58,10 +61,10 @@ class CommandManager:
             text = self.generator.gen_full_rand()
             self.send_answer(context, text)
         else:
-            value = self.parse_command(message.lstrip(), sender)
+            value, command_type = self.parse_command(message.lstrip(), sender)
             if value is None:  # if command does not return anything
                 return
-            self.send_answer(context, value)
+            self.send_answer(context, type=command_type, arg=value)
 
     def task_gen_by_word(self, word):
         text = self.generator.gen_by_word(word)

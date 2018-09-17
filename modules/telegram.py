@@ -48,6 +48,12 @@ class TeleModule(threading.Thread):
         except ApiException as e:
             print("Cannot send message, maybe too long?")
 
+    def send_voice(self, to, file):
+        try:
+            print("NOT IMPLEMENTED")
+        except ApiException as e:
+            print("Cannot send message")
+
     def run(self):
         while True:
             try:
