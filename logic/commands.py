@@ -1,9 +1,12 @@
 #!/usr/bin/python3
+import os
 import random
+from .texttospeech import TextToSpeech
 
 
 class CommandManager:
-    commands = {'!qvoice': ('voice', lambda this, arg, sender: 'fuck you'),
+    commands = {
+                '!qvoice': ('voice', lambda this, arg, sender: this.task_gen_by_word_with_voice(arg[1])),
                 '!q': ('text', lambda this, arg, sender: this.task_gen_by_word(arg[1])),
                 '!ql': ('text', lambda this, arg, sender: this.task_gen_by_word_like(arg[1])),
                 '!roll': ('text', lambda this, arg, sender: this.task_roll()),
@@ -12,12 +15,13 @@ class CommandManager:
                 '!on': ('text', lambda this, arg, sender: this.self.task_enable_bot(sender)),
                 '!answer_mode': ('text', lambda this, arg, sender: this.task_set_answer_mode(arg[1])),
                 '!help': ('text', lambda this, arg, sender: this.task_print_help())
-                }
+    }
 
     def __init__(self, generator, config):
         self.generator = generator
         self.config = config
         self.enabled = {}
+        self.tts = TextToSpeech(self.config.get_voice_api_key())
 
     @staticmethod
     def check_message_for_command(message):
@@ -37,6 +41,7 @@ class CommandManager:
             module.send_message(to, arg)
         elif command_type == 'voice' and module.get_module_name() == 'telegram':
             module.send_voice(to, arg)
+            os.unlink(arg)
 
     def parse_command(self, command, sender):
         args = command.rstrip().split(' ')
@@ -73,6 +78,10 @@ class CommandManager:
     def task_gen_by_word_like(self, word):
         text = self.generator.gen_by_word(word, True)
         return text
+
+    def task_gen_by_word_with_voice(self, word):
+        text = self.generator.gen_by_word(word)
+        return self.tts.get_voice_file(text)
 
     def task_about(self):
         text = 'Zhelezyaka v0.0.2, written by fgssfgss'

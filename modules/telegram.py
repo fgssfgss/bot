@@ -50,7 +50,8 @@ class TeleModule(threading.Thread):
 
     def send_voice(self, to, file):
         try:
-            print("NOT IMPLEMENTED")
+            print("NOT FULLY IMPLEMENTED")
+            self.bot.send_voice(to, file)
         except ApiException as e:
             print("Cannot send message")
 

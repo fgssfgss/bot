@@ -3,6 +3,7 @@
     "sqlite_mode": "-1",
     "worker_threads" : "2",
     "answer_mode": "bynick",
+	"voice_api_key": "blablabla",
     "enabled_modules": ["telegram", "vk"],
     "modules": [{
 			"network": "vk",
