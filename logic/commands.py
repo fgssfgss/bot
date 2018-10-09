@@ -35,11 +35,12 @@ class CommandManager:
         module = context['module']
         to = context['from']
         command_type = kwargs.get('type', 'text')
-        arg = kwargs.get('arg', '')
+        arg = kwargs.get('arg')
 
         if command_type == 'text':
             module.send_message(to, arg)
-        elif command_type == 'voice' and module.get_module_name() == 'telegram':
+        elif command_type == 'voice' and module.get_module_name() == 'telegram'\
+                and arg is not None:
             module.send_voice(to, arg)
 
     def parse_command(self, command, sender):

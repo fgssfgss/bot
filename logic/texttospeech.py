@@ -14,7 +14,10 @@ class TextToSpeech:
         url = TextToSpeech.ENDPOINT.format(self.key, quoted_text)
         data = requests.get(url, allow_redirects=True)
         f = BytesIO(b'')
-        for chunk in data.iter_content(chunk_size=1024):
-            f.write(chunk)
-        f.seek(0)
-        return f
+        if data.status_code == 200:
+            for chunk in data.iter_content(chunk_size=1024):
+                f.write(chunk)
+            f.seek(0)
+            return f
+        else:
+            return None
