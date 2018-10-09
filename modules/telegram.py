@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import os
 import threading
 
 import telebot
@@ -50,10 +51,13 @@ class TeleModule(threading.Thread):
 
     def send_voice(self, to, file):
         try:
-            print("NOT FULLY IMPLEMENTED")
-            self.bot.send_voice(to, file)
+            with open(file, 'rb') as fd:
+                self.bot.send_voice(to, fd)
+            os.remove(file)
+
         except ApiException as e:
             print("Cannot send message")
+            raise e
 
     def run(self):
         while True:
