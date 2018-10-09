@@ -61,7 +61,7 @@ class CommandManager:
             if context['module'].get_module_name() == "jabber" and not message.startwith(
                     context['module'].options['nick']):  # only for jabber and maybe telegram, but not tested
                 return
-            if sender in self.enabled.keys() and not self.enabled[sender]:
+            if sender not in self.enabled.keys() or not self.enabled[sender]:
                 return
             text = self.generator.gen_full_rand()
             self.send_answer(context, text)
@@ -112,7 +112,7 @@ class CommandManager:
                '\n!q - Generate message with some word inside' \
                '\n!ql - Generate message with some substring in random word' \
                '\n!roll - Roll a dice' \
-               '\n!on - Enable bot for this conference or chat' \
+               '\n!on - Enable bot for this conference or chat(by default disabled)' \
                '\n!off - Disable bot for this conference or chat'
         return text
 
