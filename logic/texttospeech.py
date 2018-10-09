@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from tempfile import NamedTemporaryFile
+from io import BytesIO
 import requests
 
 
@@ -13,8 +13,8 @@ class TextToSpeech:
         quoted_text = text
         url = TextToSpeech.ENDPOINT.format(self.key, quoted_text)
         data = requests.get(url, allow_redirects=True)
-        with NamedTemporaryFile(delete=False) as f:
-            for chunk in data.iter_content(chunk_size=128):
-                f.write(chunk)
-            print(f.name)
-            return f.name
+        f = BytesIO(b'')
+        for chunk in data.iter_content(chunk_size=1024):
+            f.write(chunk)
+        f.seek(0)
+        return f

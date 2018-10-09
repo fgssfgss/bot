@@ -41,7 +41,6 @@ class CommandManager:
             module.send_message(to, arg)
         elif command_type == 'voice' and module.get_module_name() == 'telegram':
             module.send_voice(to, arg)
-            os.unlink(arg)
 
     def parse_command(self, command, sender):
         args = command.rstrip().split(' ')

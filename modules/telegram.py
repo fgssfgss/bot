@@ -51,10 +51,7 @@ class TeleModule(threading.Thread):
 
     def send_voice(self, to, file):
         try:
-            with open(file, 'rb') as fd:
-                self.bot.send_voice(to, fd)
-            os.remove(file)
-
+            self.bot.send_voice(to, file)
         except ApiException as e:
             print("Cannot send message")
             raise e
