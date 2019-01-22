@@ -111,6 +111,7 @@ class CommandManager:
                '\n!about - View about message' \
                '\n!q - Generate message with some word inside' \
                '\n!ql - Generate message with some substring in random word' \
+               '\n!qvoice - Generate voice message with some word inside' \
                '\n!roll - Roll a dice' \
                '\n!on - Enable bot for this conference or chat(by default disabled)' \
                '\n!off - Disable bot for this conference or chat'
