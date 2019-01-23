@@ -33,7 +33,7 @@ class TextToSpeech:
                 else:
                     text = self.in_queue.get()
                     new_string = "".join(filter(lambda x: x.isalpha() or x.isspace(), text))
-                    tmp_file = festival.textToWavFile(" ".join(new_string.split()))
+                    tmp_file = festival.textToWavFile(" ".join(new_string.split()[:100]))
                     self.done[text] = tmp_file
 
     def __init__(self):

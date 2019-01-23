@@ -56,6 +56,8 @@ class CommandManager:
         message = context['text']
         sender = context['from']
 
+        print("[{}] {}".format(sender, message))
+
         if not self.check_message_for_command(message):
             self.generator.insert_to_db(message)
             if context['module'].get_module_name() == "jabber" and not message.startwith(
