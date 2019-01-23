@@ -32,9 +32,12 @@ class TextToSpeech:
                     continue
                 else:
                     text = self.in_queue.get()
-                    new_string = "".join(filter(lambda x: x.isalpha() or x.isspace(), text))
-                    tmp_file = festival.textToWavFile(" ".join(new_string.split()[:100]))
-                    self.done[text] = tmp_file
+                    try:
+                        new_string = "".join(filter(lambda x: x.isalpha() or x.isspace(), text))
+                        tmp_file = festival.textToWavFile(" ".join(new_string.split()[:100]))
+                        self.done[text] = tmp_file
+                    except:
+                        self.done[text] = "empty"
 
     def __init__(self):
         self.fest = self.FestivalThread()
@@ -44,6 +47,8 @@ class TextToSpeech:
         f = BytesIO(b'')
         self.fest.put_text(text)
         tmp_file = self.fest.get_text(text)
+        if tmp_file == "empty":
+            return None
         with open(tmp_file, 'rb') as fd:
             data, samplerate = sf.read(fd)
             sf.write(f, data, samplerate, format='OGG')
