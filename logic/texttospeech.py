@@ -6,57 +6,32 @@ import soundfile as sf
 import threading
 import time
 import queue
+import uuid
+import subprocess
 
 
 class TextToSpeech:
-    class FestivalThread(threading.Thread):
-        def __init__(self):
-            threading.Thread.__init__(self)
-            self.in_queue = queue.Queue()
-            self.done = dict()
-
-        def put_text(self, text):
-            self.in_queue.put(text)
-
-        def get_text(self, text):
-            while True:
-                if text in self.done.keys():
-                    return self.done[text]
-                else:
-                    time.sleep(1)
-
-        def run(self):
-            import festival
-            while True:
-                if self.in_queue.qsize() < 1:
-                    time.sleep(1)
-                    continue
-                else:
-                    text = self.in_queue.get()
-                    try:
-                        new_string = "".join(filter(lambda x: x.isalpha() or x.isspace(), text))
-                        tmp_file = festival.textToWavFile(" ".join(new_string.split()[:100]))
-                        self.done[text] = tmp_file
-                    except:
-                        self.done[text] = "empty"
+    FILE_LOCATION = '/tmp/{}.ogg'
 
     def __init__(self):
-        self.fest = self.FestivalThread()
-        self.fest.start()
+        self.lock = threading.Lock()
+        self.tool_path = '/home/user/bot/voice_backend.py'
+
+    def make_text_pretty(self, text):
+        new_string = "".join(filter(lambda x: x.isalpha() or x.isspace(), text))
+        return " ".join(new_string.split())
 
     def get_voice_file(self, text):
-        f = BytesIO(b'')
-        self.fest.put_text(text)
-        tmp_file = self.fest.get_text(text)
-        if tmp_file == "empty" or tmp_file is None:
-            return None
-        try:
-            with open(tmp_file, 'rb') as fd:
-                data, samplerate = sf.read(fd)
-                sf.write(f, data, samplerate, format='OGG')
-            os.unlink(tmp_file)
-        except FileNotFoundError:
-            return None
-        f.seek(0)
+        f = None
+        proper_text = self.make_text_pretty(text)
+        self.lock.acquire()
+        location = self.FILE_LOCATION.format(str(uuid.uuid4()))
+        cmd = [self.tool_path, location]
+        with subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE,  stderr=subprocess.STDOUT) as process:
+            process.communicate(input=bytes(proper_text, 'UTF-8'))
+        with open(location, 'rb') as file:
+            f = BytesIO(file.read())
+        os.unlink(location)
+        self.lock.release()
         return f
 
