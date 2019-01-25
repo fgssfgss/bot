@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+import math
 from io import BytesIO
 import soundfile as sf
 import threading
@@ -47,11 +48,15 @@ class TextToSpeech:
         f = BytesIO(b'')
         self.fest.put_text(text)
         tmp_file = self.fest.get_text(text)
-        if tmp_file == "empty":
+        if tmp_file == "empty" or tmp_file is None:
             return None
-        with open(tmp_file, 'rb') as fd:
-            data, samplerate = sf.read(fd)
-            sf.write(f, data, samplerate, format='OGG')
-        os.unlink(tmp_file)
+        try:
+            with open(tmp_file, 'rb') as fd:
+                data, samplerate = sf.read(fd)
+                sf.write(f, data, samplerate, format='OGG')
+            os.unlink(tmp_file)
+        except FileNotFoundError:
+            return None
         f.seek(0)
         return f
+
