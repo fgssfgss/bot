@@ -6,6 +6,7 @@ import math
 import soundfile as sf
 import festival
 
+
 def main(filename):
 	data = sys.stdin.readlines()
 	str = ""
@@ -23,6 +24,7 @@ def main(filename):
 	else:
 		print("OK")
 	sys.exit(0)
+
 
 if __name__ == "__main__":
 	if len(sys.argv) > 1:

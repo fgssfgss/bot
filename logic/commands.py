@@ -21,7 +21,7 @@ class CommandManager:
         self.generator = generator
         self.config = config
         self.enabled = {}
-        self.tts = TextToSpeech()
+        self.tts = TextToSpeech(self.config.get_voice_backend(), self.config.get_voice_tmpdir())
 
     @staticmethod
     def check_message_for_command(message):

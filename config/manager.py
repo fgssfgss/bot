@@ -37,5 +37,8 @@ class ConfigManager:
     def get_worker_thread_num(self):
         return int(self.data['worker_threads'])
 
-    def get_voice_api_key(self):
-        return str(self.data['voice_api_key'])
+    def get_voice_backend(self):
+        return str(self.data['voice_api_backend'])
+
+    def get_voice_tmpdir(self):
+        return str(self.data['voice_api_tmpdir'])
