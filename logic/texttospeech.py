@@ -29,9 +29,12 @@ class TextToSpeech:
         with subprocess.Popen(cmd, stdout=subprocess.PIPE,
                               stdin=subprocess.PIPE,  stderr=subprocess.STDOUT) as process:
             process.communicate(input=bytes(proper_text, 'UTF-8'))
-        with open(location, 'rb') as file:
-            f = BytesIO(file.read())
-        os.unlink(location)
+        try:
+            with open(location, 'rb') as file:
+                f = BytesIO(file.read())
+            os.unlink(location)
+        except FileNotFoundError:
+            print("Cant find file. Maybe paste is too long or extra symbols in it? Text length is {}".format(len(text)))
         self.lock.release()
         return f
 
