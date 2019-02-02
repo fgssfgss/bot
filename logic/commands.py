@@ -12,7 +12,7 @@ class CommandManager:
                 '!roll': ('text', lambda this, arg, sender: this.task_roll()),
                 '!about': ('text', lambda this, arg, sender: this.task_about()),
                 '!off': ('text', lambda this, arg, sender: this.task_disable_bot(sender)),
-                '!on': ('text', lambda this, arg, sender: this.self.task_enable_bot(sender)),
+                '!on': ('text', lambda this, arg, sender: this.task_enable_bot(sender)),
                 '!answer_mode': ('text', lambda this, arg, sender: this.task_set_answer_mode(arg[1])),
                 '!help': ('text', lambda this, arg, sender: this.task_print_help())
     }
@@ -66,7 +66,7 @@ class CommandManager:
             if sender not in self.enabled.keys() or not self.enabled[sender]:
                 return
             text = self.generator.gen_full_rand()
-            self.send_answer(context, text)
+            self.send_answer(context, type='text', arg=text)
         else:
             value, command_type = self.parse_command(message.lstrip(), sender)
             if value is None:  # if command does not return anything
