@@ -25,7 +25,8 @@ class CommandManager:
 
     @staticmethod
     def check_message_for_command(message):
-        if message.lstrip()[0] == '!':
+        command_symbol = message.lstrip()[0]
+        if command_symbol == '!' or command_symbol == '/':
             return True  # This is command
         else:
             return False
@@ -45,7 +46,11 @@ class CommandManager:
 
     def parse_command(self, command, sender):
         args = command.rstrip().split(' ')
-        command_name = args[0]
+        command_name = list(args[0])
+        command_name[0] = '!'
+        command_name = ''.join(command_name)
+        if len(args) <= 1:
+            args.append(None)
 
         if command_name in self.commands.keys():
             return self.commands[command_name][1](self, args, sender), self.commands[command_name][0]
@@ -74,15 +79,15 @@ class CommandManager:
             self.send_answer(context, type=command_type, arg=value)
 
     def task_gen_by_word(self, word):
-        text = self.generator.gen_by_word(word)
+        text = self.generator.gen_by_word(word) if word is not None else self.generator.gen_full_rand()
         return text
 
     def task_gen_by_word_like(self, word):
-        text = self.generator.gen_by_word(word, True)
+        text = self.generator.gen_by_word(word, True) if word is not None else self.generator.gen_full_rand()
         return text
 
     def task_gen_by_word_with_voice(self, word):
-        text = self.generator.gen_by_word(word)
+        text = self.generator.gen_by_word(word) if word is not None else self.generator.gen_full_rand()
         return self.tts.get_voice_file(text)
 
     def task_about(self):
