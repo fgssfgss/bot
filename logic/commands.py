@@ -14,7 +14,9 @@ class CommandManager:
                 '!off': ('text', lambda this, arg, sender: this.task_disable_bot(sender)),
                 '!on': ('text', lambda this, arg, sender: this.task_enable_bot(sender)),
                 '!answer_mode': ('text', lambda this, arg, sender: this.task_set_answer_mode(arg[1])),
-                '!help': ('text', lambda this, arg, sender: this.task_print_help())
+                '!help': ('text', lambda this, arg, sender: this.task_print_help()),
+                '!changedb': ('text', lambda this, arg, sender: this.task_change_db(arg[1], sender)),
+                '!listdb': ('text', lambda this, arg, sender: this.task_list_db(sender))
     }
 
     def __init__(self, generator, config):
@@ -95,6 +97,16 @@ class CommandManager:
     def task_gen_by_word_with_voice(self, word):
         text = self.generator.gen_by_word(word) if word is not None else self.generator.gen_full_rand()
         return self.tts.get_voice_file(text)
+
+    def task_change_db(self, arg, sender):
+        text = 'Not allowed'
+        if str(sender) in self.config.get_admin_ids() and arg is not None:
+            text = 'Changing db to {}, probably it is empty right now, creating db structure!'.format(arg)
+            self.generator.change_db(arg)
+        return text
+
+    def task_list_db(self, sender):
+        return self.generator.list_db()
 
     def task_about(self):
         text = 'Zhelezyaka v0.0.2, written by fgssfgss'

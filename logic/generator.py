@@ -1,10 +1,27 @@
 #!/usr/bin/python3
+from database.db import Database
 
 
 class Generator:
-    def __init__(self, db):
-        self.db = db
+    def __init__(self, config):
+        self.config = config
+        self.sqlite_mode = self.config.get_sqlite_mode()
+        self.dbs = dict()
+        db_path = self.config.get_init_db_path()
+        self.dbs[db_path] = Database(db_path, self.sqlite_mode)
+        self.db = self.dbs[db_path]
         self.max = 200
+
+    def change_db(self, db):
+        if db not in self.dbs:
+            self.dbs[db] = Database(db, self.sqlite_mode)
+        self.db = self.dbs[db]
+
+    def list_db(self):
+        text = 'Databases names: \n\r'
+        for name in self.dbs.keys():
+            text = text + '- {}\n\r'.format(name)
+        return text
 
     def insert_to_db(self, text):
         self.db.insert_text(text)

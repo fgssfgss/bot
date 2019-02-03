@@ -13,7 +13,7 @@ class ConfigManager:
             data = json.load(file)
             return data
 
-    def get_db_path(self):
+    def get_init_db_path(self):
         return self.data['dbfile']
 
     def get_mode(self):
@@ -42,3 +42,6 @@ class ConfigManager:
 
     def get_voice_tmpdir(self):
         return str(self.data['voice_api_tmpdir'])
+
+    def get_admin_ids(self):
+        return str(self.data['admin_id']).split(' ')

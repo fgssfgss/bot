@@ -27,8 +27,7 @@ class TaskManager:
 
     def __init__(self, config):
         self.config = config
-        self.database = Database(self.config.get_db_path(), self.config.get_sqlite_mode())
-        self.generator = Generator(self.database)
+        self.generator = Generator(self.config)
         self.command_manager = CommandManager(self.generator, self.config)
         self.modules = []
         self.queue = queue.Queue()
