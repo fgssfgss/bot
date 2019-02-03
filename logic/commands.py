@@ -44,11 +44,17 @@ class CommandManager:
                 and arg is not None:
             module.send_voice(to, arg)
 
+    @staticmethod
+    def strip_command(command):
+        # remove botname
+        cmd = command.split('@')[0]
+        cmd_list = list(cmd)
+        cmd_list[0] = '!'
+        return "".join(cmd_list)
+
     def parse_command(self, command, sender):
         args = command.rstrip().split(' ')
-        command_name = list(args[0])
-        command_name[0] = '!'
-        command_name = ''.join(command_name)
+        command_name = self.strip_command(args[0])
         if len(args) <= 1:
             args.append(None)
 
