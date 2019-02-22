@@ -62,8 +62,8 @@ class CommandManager:
 
         if command_name in self.commands.keys():
             return self.commands[command_name][1](self, args, sender), self.commands[command_name][0]
-        #else:
-        #    return self.task_unknown_command(), 'text'
+        else:
+            return None, 'text'
 
     def parse_message(self, context):
         message = context['text']
